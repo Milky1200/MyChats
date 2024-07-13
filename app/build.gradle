@@ -48,9 +48,12 @@ dependencies {
     implementation 'io.github.chaosleung:pinview:1.4.4'
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.1.1"))
-
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-messaging:24.0.0")
+    //CircularImage
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 
 }

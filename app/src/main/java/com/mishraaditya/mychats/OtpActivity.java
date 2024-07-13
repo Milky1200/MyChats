@@ -93,9 +93,11 @@ public class OtpActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(OtpActivity.this,"Logged In Successfully",Toast.LENGTH_LONG).show();
+                            Toast.makeText(OtpActivity.this,"Logged In Successfully",Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(OtpActivity.this,SetupProfileActivity.class));
+                            finishAffinity();//will finish all activity
                         }else{
-                            Toast.makeText(OtpActivity.this,"Failed: TryAgain",Toast.LENGTH_LONG).show();
+                            Toast.makeText(OtpActivity.this,"Failed: TryAgain",Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
