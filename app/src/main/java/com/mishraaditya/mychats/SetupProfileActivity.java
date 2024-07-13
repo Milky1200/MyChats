@@ -83,8 +83,9 @@ public class SetupProfileActivity extends AppCompatActivity {
                                         String name=binding.nameBox.getText().toString();
 
                                         User user=new User(uid,name,phoneNumber,imageUrl);
-                                        database.getReference().child("users").
-                                                setValue(user)
+                                        database.getReference().child("users")
+                                                .child(uid)
+                                                .setValue(user)
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
