@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -33,6 +35,7 @@ public class SetupProfileActivity extends AppCompatActivity {
     FirebaseStorage storage;
     FirebaseDatabase database;
     Uri selectedImage;
+    ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +52,7 @@ public class SetupProfileActivity extends AppCompatActivity {
         database=FirebaseDatabase.getInstance();
 
 
+
         binding.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,6 +66,8 @@ public class SetupProfileActivity extends AppCompatActivity {
         binding.continueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                binding.overlay.setVisibility(View.VISIBLE);
+
                 String name=binding.nameBox.getText().toString();
                 if(name.isEmpty()){
                     binding.nameBox.setError("Please Enter Your Name");
@@ -89,6 +95,7 @@ public class SetupProfileActivity extends AppCompatActivity {
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
+                                                binding.overlay.setVisibility(View.GONE);
                                                 startActivity(new Intent(SetupProfileActivity.this,MainActivity.class));
                                                 finish();
 
@@ -99,8 +106,27 @@ public class SetupProfileActivity extends AppCompatActivity {
                             }
                         }
                     });
+                }else {
+                    String imageUrl="No Image";
+                    String uid=auth.getUid();
+                    String phoneNumber=auth.getCurrentUser().getPhoneNumber();
+                    User user=new User(uid,name,phoneNumber,imageUrl);
+                    database.getReference().child("users")
+                            .child(uid)
+                            .setValue(user)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+
+                                    binding.overlay.setVisibility(View.GONE);
+                                    startActivity(new Intent(SetupProfileActivity.this,MainActivity.class));
+                                    finish();
+
+                                }
+                            });
+                    }
+
                 }
-            }
         });
 
     }
