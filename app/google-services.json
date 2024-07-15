@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "640375297706",
+    "project_id": "mychats-25287",
+    "storage_bucket": "mychats-25287.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:640375297706:android:b44d25f902f3821d4122d3",
+        "android_client_info": {
+          "package_name": "com.mishraaditya.mychats"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqpHUAsQiblW7EK4DBSLVuAvzXJaV4hpI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
