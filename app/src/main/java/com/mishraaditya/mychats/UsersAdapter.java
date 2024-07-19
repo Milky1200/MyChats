@@ -1,6 +1,7 @@
 package com.mishraaditya.mychats;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,16 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         holder.binding.username.setText(user.name);
         Glide.with(context).load(user.getProfileImage()).placeholder(R.drawable.avatar)
                 .into(holder.binding.profile);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent iNext=new Intent(context,ChatActivity.class);
+                iNext.putExtra("name",user.getName());
+                iNext.putExtra("uid",user.getUid());
+                context.startActivity(iNext);
+            }
+        });
     }
 
     @Override
