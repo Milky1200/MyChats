@@ -6,12 +6,14 @@ public class Message {
     private int feeling;
 
     public Message() {
+        this.feeling=-1;
     }
 
     public Message(String message, String senderId, long timestamp) {
         this.message = message;
         this.senderId = senderId;
         this.timestamp = timestamp;
+        this.feeling=-1;
     }
 
     public String getMessageId() {

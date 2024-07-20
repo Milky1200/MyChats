@@ -73,6 +73,7 @@ public class ChatActivity extends AppCompatActivity {
                         messages.clear();
                         for(DataSnapshot snapshot1:snapshot.getChildren()){
                             Message message=snapshot1.getValue(Message.class);
+                            message.setMessageId(snapshot1.getKey());
                             messages.add(message);
                         }
                         adapter.notifyDataSetChanged();
@@ -83,7 +84,7 @@ public class ChatActivity extends AppCompatActivity {
 
                     }
                 });
-        adapter=new MessageAdapter(this,messages);
+        adapter=new MessageAdapter(this,messages,senderRoom,receiverRoom);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerView.setAdapter(adapter);
         binding.sendBtn.setOnClickListener(new View.OnClickListener() {
@@ -92,11 +93,13 @@ public class ChatActivity extends AppCompatActivity {
                 String messageText=binding.messageBox.getText().toString();
                 Date date=new Date();
                 Message message=new Message(messageText,senderUid,date.getTime());
+                message.setFeeling(-1);
                 binding.messageBox.setText("");
+                String token=database.getReference().push().getKey();
                 database.getReference().child("chats")
                         .child(senderRoom)
                         .child("messages")
-                        .push()//generates a new value other wise it will over lap
+                        .child(token)//generates a new value other wise it will over lap
                         .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
@@ -104,7 +107,7 @@ public class ChatActivity extends AppCompatActivity {
                                 database.getReference().child("chats")
                                         .child(receiverRoom)
                                         .child("messages")
-                                        .push()
+                                        .child(token)
                                         .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {

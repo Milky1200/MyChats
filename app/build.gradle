@@ -55,5 +55,7 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging:24.0.0")
     //CircularImage
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+    //Emo Reactions
+    implementation "com.github.pgreze:android-reactions:1.6"
 
 }
