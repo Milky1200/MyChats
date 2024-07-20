@@ -1,4 +1,4 @@
-package com.mishraaditya.mychats;
+package com.mishraaditya.mychats.Adaptors;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.GlideBuilder;
+import com.mishraaditya.mychats.Activities.ChatActivity;
+import com.mishraaditya.mychats.R;
+import com.mishraaditya.mychats.Models.User;
 import com.mishraaditya.mychats.databinding.RowConversationBinding;
 
 import java.util.ArrayList;
@@ -35,14 +37,14 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         User user=usersData.get(position);
-        holder.binding.username.setText(user.name);
+        holder.binding.username.setText(user.getName());
         Glide.with(context).load(user.getProfileImage()).placeholder(R.drawable.avatar)
                 .into(holder.binding.profile);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent iNext=new Intent(context,ChatActivity.class);
+                Intent iNext=new Intent(context, ChatActivity.class);
                 iNext.putExtra("name",user.getName());
                 iNext.putExtra("uid",user.getUid());
                 context.startActivity(iNext);

@@ -1,4 +1,4 @@
-package com.mishraaditya.mychats;
+package com.mishraaditya.mychats.Activities;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,6 +16,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mishraaditya.mychats.R;
+import com.mishraaditya.mychats.Models.User;
+import com.mishraaditya.mychats.Adaptors.UsersAdapter;
 import com.mishraaditya.mychats.databinding.ActivityMainBinding;
 
 import java.util.ArrayList;

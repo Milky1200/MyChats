@@ -1,4 +1,4 @@
-package com.mishraaditya.mychats;
+package com.mishraaditya.mychats.Activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -10,12 +10,10 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -24,9 +22,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mishraaditya.mychats.R;
+import com.mishraaditya.mychats.Models.User;
 import com.mishraaditya.mychats.databinding.ActivitySetupProfileBinding;
-
-import java.net.URI;
 
 public class SetupProfileActivity extends AppCompatActivity {
 

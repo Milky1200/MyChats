@@ -14,20 +14,20 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".ChatActivity"
+            android:name=".Activities.ChatActivity"
             android:exported="false" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".Activities.MainActivity"/>
         </activity>
         <activity
-            android:name=".SetupProfileActivity"
+            android:name=".Activities.SetupProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".OtpActivity"
+            android:name=".Activities.OtpActivity"
             android:exported="false" />
         <activity
-            android:name=".PhoneNumberActivity"
+            android:name=".Activities.PhoneNumberActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,7 +35,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:exported="false" />
     </application>
 

@@ -1,4 +1,4 @@
-package com.mishraaditya.mychats;
+package com.mishraaditya.mychats.Models;
 
 public class User {
     String uid,name,phoneNumber,profileImage;
