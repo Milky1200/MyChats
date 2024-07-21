@@ -63,6 +63,7 @@ public class MessageAdapter extends RecyclerView.Adapter{
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
+
         int Reactions[]=new int[]{
                 R.drawable.ic_fb_like,
                 R.drawable.ic_fb_love,
