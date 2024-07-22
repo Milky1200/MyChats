@@ -57,5 +57,7 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     //Emo Reactions
     implementation "com.github.pgreze:android-reactions:1.6"
+    //Status
+    implementation 'com.github.3llomi:CircularStatusView:V1.0.3'
 
 }
