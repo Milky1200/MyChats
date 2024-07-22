@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -31,6 +32,7 @@ import com.google.firebase.storage.StorageKt;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mishraaditya.mychats.Adaptors.TopStatusAdapter;
+import com.mishraaditya.mychats.Models.Status;
 import com.mishraaditya.mychats.Models.UserStatus;
 import com.mishraaditya.mychats.R;
 import com.mishraaditya.mychats.Models.User;
@@ -39,6 +41,8 @@ import com.mishraaditya.mychats.databinding.ActivityMainBinding;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<UserStatus> userStatuses;
 
     ProgressDialog progressDialog;
+
+    User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
 
         progressDialog=new ProgressDialog(this);
         progressDialog.setMessage("Uploading Status...");
@@ -104,6 +111,18 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        database.getReference().child("users").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                user=snapshot.getValue(User.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
@@ -124,7 +143,26 @@ public class MainActivity extends AppCompatActivity {
                             storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
+                                    UserStatus userStatus=new UserStatus();
+                                    userStatus.setName(user.getName());
+                                    userStatus.setProfileImage(user.getProfileImage());
+                                    userStatus.setLastUpdated(date.getTime());
+
+                                    HashMap<String, Object> Obj = new HashMap<>();
+                                    Obj.put("name",userStatus.getName());
+                                    Obj.put("profileImage",userStatus.getProfileImage());
+                                    Obj.put("lastUpdated",userStatus.getLastUpdated());
+
+                                    Status status=new Status(uri.toString(),userStatus.getLastUpdated());
+                                    database.getReference().child("stories")
+                                                    .child(FirebaseAuth.getInstance().getUid())
+                                                            .updateChildren(Obj);
+                                    database.getReference().child("stories").child(FirebaseAuth.getInstance().getUid())
+                                                    .child("statuses").push().setValue(status);
+
                                     progressDialog.dismiss();
+
+
                                 }
                             });
                         }
