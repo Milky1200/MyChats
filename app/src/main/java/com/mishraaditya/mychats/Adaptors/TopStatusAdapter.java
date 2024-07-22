@@ -8,11 +8,19 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.mishraaditya.mychats.Activities.MainActivity;
+import com.mishraaditya.mychats.Models.Status;
 import com.mishraaditya.mychats.Models.UserStatus;
 import com.mishraaditya.mychats.R;
 import com.mishraaditya.mychats.databinding.ItemSentBinding;
+import com.mishraaditya.mychats.databinding.ItemStatusBinding;
 
 import java.util.ArrayList;
+
+import omari.hamza.storyview.StoryView;
+import omari.hamza.storyview.callback.StoryClickListeners;
+import omari.hamza.storyview.model.MyStory;
 
 public class TopStatusAdapter extends RecyclerView.Adapter<TopStatusAdapter.TopStatusViewHolder
         >{
@@ -28,12 +36,46 @@ public class TopStatusAdapter extends RecyclerView.Adapter<TopStatusAdapter.TopS
     @NonNull
     @Override
     public TopStatusViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(context).inflate(R.layout.item_status,parent);
+        View view= LayoutInflater.from(context).inflate(R.layout.item_status,parent,false);
         return new TopStatusViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull TopStatusViewHolder holder, int position) {
+        UserStatus userStatus=userStatuses.get(position);
+        Status lastStatus=userStatus.getStatuses().get(userStatus.getStatuses().size()-1);
+        Glide.with(context).load(lastStatus.getImageUrl()).into(holder.binding.image);
+        holder.binding.circularStatusView.setPortionsCount(userStatus.getStatuses().size());
+        holder.binding.circularStatusView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<MyStory> stories=new ArrayList<>();
+                for(Status status:userStatus.getStatuses()){
+                    stories.add(new MyStory(status.getImageUrl()));
+                }
+
+                new StoryView.Builder(((MainActivity)context).getSupportFragmentManager())
+                        .setStoriesList(stories) // Required
+                        .setStoryDuration(5000) // Default is 2000 Millis (2 Seconds)
+                        .setTitleText(userStatus.getName()) // Default is Hidden
+                        .setSubtitleText("Status of The Day") // Default is Hidden
+                        .setTitleLogoUrl(userStatus.getProfileImage()) // Default is Hidden
+                        .setStoryClickListeners(new StoryClickListeners() {
+                            @Override
+                            public void onDescriptionClickListener(int position) {
+                                //your action
+                            }
+
+                            @Override
+                            public void onTitleIconClickListener(int position) {
+                                //your action
+                            }
+                        }) // Optional Listeners
+                        .build() // Must be called before calling show method
+                        .show();
+
+            }
+        });
 
 
     }
@@ -44,10 +86,10 @@ public class TopStatusAdapter extends RecyclerView.Adapter<TopStatusAdapter.TopS
     }
 
     public class TopStatusViewHolder extends RecyclerView.ViewHolder {
-        ItemSentBinding binding;
+        ItemStatusBinding binding;
         public TopStatusViewHolder(@NonNull View itemView) {
             super(itemView);
-            binding=ItemSentBinding.bind(itemView);
+            binding=ItemStatusBinding.bind(itemView);
         }
     }
 }

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -39,6 +40,8 @@ import com.mishraaditya.mychats.Models.User;
 import com.mishraaditya.mychats.Adaptors.UsersAdapter;
 import com.mishraaditya.mychats.databinding.ActivityMainBinding;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<UserStatus> userStatuses;
 
     ProgressDialog progressDialog;
+
+    TopStatusAdapter topStatusAdapter;
 
     User user;
     @Override
@@ -81,13 +86,15 @@ public class MainActivity extends AppCompatActivity {
         database=FirebaseDatabase.getInstance();
         adapter=new UsersAdapter(this,users);
         binding.recyclerView.setAdapter(adapter);
-
+///Setting the chat users
         database.getReference().child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 users.clear();
                 for (DataSnapshot snapshot1:snapshot.getChildren()){
-                    users.add(snapshot1.getValue(User.class));
+                    User user1=snapshot1.getValue(User.class);
+                    if(!user1.getUid().equals(FirebaseAuth.getInstance().getUid()))
+                        users.add(user1);
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -111,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
+///Identifying The main user
         database.getReference().child("users").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -123,8 +130,46 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    }
+//StatusCode
+        database.getReference().child("stories").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    userStatuses.clear();
+                    for(DataSnapshot storySnapshot:snapshot.getChildren()){
+                        UserStatus userStatus=new UserStatus();
+                        userStatus.setName(storySnapshot.child("name").getValue(String.class));
+                        Long lastUpdatedValue = storySnapshot.child("lastUpdated").getValue(Long.class);
+                        if (lastUpdatedValue != null) {
+                            userStatus.setLastUpdated(lastUpdatedValue);
+                        } else {
+                            // Handle the null case, e.g., set a default value or log a warning
+                            userStatus.setLastUpdated(0L); // Example: setting default value to 0
+                            Log.w("MainActivity", "lastUpdated value is null");
+                        }
+                        userStatus.setProfileImage(storySnapshot.child("profileImage").getValue(String.class));
 
+                        ArrayList<Status> statuses=new ArrayList<>();
+                        for(DataSnapshot sts:snapshot.child("statuses").getChildren()){
+                            Status sample=sts.getValue(Status.class);
+                            statuses.add(sample);
+                        }
+
+                        userStatus.setStatuses(statuses);
+                        userStatuses.add(userStatus);
+                    }
+                    topStatusAdapter.notifyDataSetChanged();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+///StatusCode
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -175,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setStatusAdapter(ArrayList<UserStatus> userStatuses) {
         //to set status
-        TopStatusAdapter topStatusAdapter=new TopStatusAdapter(this,userStatuses);
+        topStatusAdapter=new TopStatusAdapter(this,userStatuses);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
         binding.statusList.setLayoutManager(linearLayoutManager);
