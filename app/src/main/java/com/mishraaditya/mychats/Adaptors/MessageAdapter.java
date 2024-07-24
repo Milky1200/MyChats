@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.github.pgreze.reactions.ReactionPopup;
 import com.github.pgreze.reactions.ReactionsConfig;
 import com.github.pgreze.reactions.ReactionsConfigBuilder;
@@ -102,6 +103,14 @@ public class MessageAdapter extends RecyclerView.Adapter{
 
         if(holder.getClass()==sentViewHolder.class){
             sentViewHolder viewHolder=(sentViewHolder) holder;
+            if(message.getMessage().equals("photo")) {
+                viewHolder.binding.image.setVisibility(View.VISIBLE);
+                viewHolder.binding.message.setVisibility(View.GONE);
+                Glide.with(context)
+                        .load(message.getImageUrl())
+                        .placeholder(R.drawable.avatar)
+                        .into(viewHolder.binding.image);
+            }
             viewHolder.binding.message.setText(message.getMessage());
             if(message.getFeeling()>=0){
                 //message.setFeeling(Reactions[(int)message.getFeeling()]);
@@ -119,8 +128,23 @@ public class MessageAdapter extends RecyclerView.Adapter{
                     return false;
                 }
             });
+            viewHolder.binding.image.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    popup.onTouch(v,event);
+                    return false;
+                }
+            });
         }else{
             receiveViewHolder viewHolder=(receiveViewHolder) holder;
+            if(message.getMessage().equals("photo")) {
+                viewHolder.binding.image.setVisibility(View.VISIBLE);
+                viewHolder.binding.message.setVisibility(View.GONE);
+                Glide.with(context)
+                        .load(message.getImageUrl())
+                        .placeholder(R.drawable.avatar)
+                        .into(viewHolder.binding.image);
+            }
             viewHolder.binding.message.setText(message.getMessage());
 
             if(message.getFeeling()>=0){
@@ -132,6 +156,13 @@ public class MessageAdapter extends RecyclerView.Adapter{
                 viewHolder.binding.feeling.setVisibility(View.GONE);
             }
             viewHolder.binding.message.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    popup.onTouch(v,event);
+                    return false;
+                }
+            });
+            viewHolder.binding.image.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     popup.onTouch(v,event);

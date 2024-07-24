@@ -1,7 +1,7 @@
 package com.mishraaditya.mychats.Models;
 
 public class Message {
-    private String messageId, message,senderId;
+    private String messageId, message,senderId,imageUrl;
     private long timestamp;
     private int feeling;
 
@@ -54,5 +54,13 @@ public class Message {
 
     public void setFeeling(int feeling) {
         this.feeling = feeling;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
