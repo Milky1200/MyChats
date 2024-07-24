@@ -43,6 +43,7 @@ public class TopStatusAdapter extends RecyclerView.Adapter<TopStatusAdapter.TopS
     @Override
     public void onBindViewHolder(@NonNull TopStatusViewHolder holder, int position) {
         UserStatus userStatus=userStatuses.get(position);
+
         Status lastStatus=userStatus.getStatuses().get(userStatus.getStatuses().size()-1);
         Glide.with(context).load(lastStatus.getImageUrl()).into(holder.binding.image);
         holder.binding.circularStatusView.setPortionsCount(userStatus.getStatuses().size());
@@ -58,7 +59,7 @@ public class TopStatusAdapter extends RecyclerView.Adapter<TopStatusAdapter.TopS
                         .setStoriesList(stories) // Required
                         .setStoryDuration(5000) // Default is 2000 Millis (2 Seconds)
                         .setTitleText(userStatus.getName()) // Default is Hidden
-                        .setSubtitleText("Status of The Day") // Default is Hidden
+                        .setSubtitleText("") // Default is Hidden
                         .setTitleLogoUrl(userStatus.getProfileImage()) // Default is Hidden
                         .setStoryClickListeners(new StoryClickListeners() {
                             @Override

@@ -11,10 +11,11 @@
         android:id="@+id/group"
         android:title="Groups" />
     <item
-        android:id="@+id/invite"
-        android:title="Invite" />
-    <item
         android:id="@+id/settings"
         android:title="Settings" />
+    <item
+        android:id="@+id/logOut"
+        android:title="LogOut"
+        android:icon="@drawable/ic_logout" />
 
 </menu>

@@ -78,6 +78,7 @@ public class ChatActivity extends AppCompatActivity {
                             messages.add(message);
                         }
                         adapter.notifyDataSetChanged();
+                        binding.recyclerView.scrollToPosition(messages.size()-1);
                     }
 
                     @Override

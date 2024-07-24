@@ -1,18 +1,24 @@
 package com.mishraaditya.mychats.Activities;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -22,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -131,36 +138,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 //StatusCode
-        database.getReference().child("stories").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
+        database.getReference().child("stories").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
+                if(snapshot.exists()) {
                     userStatuses.clear();
-                    for(DataSnapshot storySnapshot:snapshot.getChildren()){
-                        UserStatus userStatus=new UserStatus();
-                        userStatus.setName(storySnapshot.child("name").getValue(String.class));
-                        Long lastUpdatedValue = storySnapshot.child("lastUpdated").getValue(Long.class);
-                        if (lastUpdatedValue != null) {
-                            userStatus.setLastUpdated(lastUpdatedValue);
-                        } else {
-                            // Handle the null case, e.g., set a default value or log a warning
-                            userStatus.setLastUpdated(0L); // Example: setting default value to 0
-                            Log.w("MainActivity", "lastUpdated value is null");
-                        }
-                        userStatus.setProfileImage(storySnapshot.child("profileImage").getValue(String.class));
 
-                        ArrayList<Status> statuses=new ArrayList<>();
-                        for(DataSnapshot sts:snapshot.child("statuses").getChildren()){
-                            Status sample=sts.getValue(Status.class);
-                            statuses.add(sample);
+                    for(DataSnapshot storySnapshot : snapshot.getChildren()) {
+                        UserStatus status = new UserStatus();
+                        status.setName(storySnapshot.child("name").getValue(String.class));
+                        status.setProfileImage(storySnapshot.child("profileImage").getValue(String.class));
+                        status.setLastUpdated(storySnapshot.child("lastUpdated").getValue(Long.class));
+
+                        ArrayList<Status> statuses = new ArrayList<>();
+
+                        for(DataSnapshot statusSnapshot : storySnapshot.child("statuses").getChildren()) {
+                            Status sampleStatus = statusSnapshot.getValue(Status.class);
+                            statuses.add(sampleStatus);
                         }
 
-                        userStatus.setStatuses(statuses);
-                        userStatuses.add(userStatus);
+                        status.setStatuses(statuses);
+                        userStatuses.add(status);
                     }
+
                     topStatusAdapter.notifyDataSetChanged();
                 }
-
             }
 
             @Override
@@ -235,6 +237,35 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Settings clicked.", Toast.LENGTH_SHORT).show();
         }else if(item.getItemId()==R.id.group){
             Toast.makeText(this, "Group clicked.", Toast.LENGTH_SHORT).show();
+        }else if(item.getItemId()==R.id.logOut){
+            FirebaseAuth.getInstance().signOut();
+            LayoutInflater inflater = LayoutInflater.from(this);
+            View dialogView = inflater.inflate(R.layout.dialogue_logout, null);
+
+            // Create the AlertDialog
+            AlertDialog alertDialog = new AlertDialog.Builder(this)
+                    .setView(dialogView)
+                    .create();
+
+            // Find and set up the buttons
+            AppCompatButton btnCancel = dialogView.findViewById(R.id.btnCancel);
+            Button btnLogout = dialogView.findViewById(R.id.btnLogout);
+            TextView tvLogoutMessage = dialogView.findViewById(R.id.tvLogoutMessage);
+
+            btnCancel.setOnClickListener(view -> alertDialog.dismiss());
+            btnLogout.setOnClickListener(view -> {
+                // Perform the logout action
+                Toast.makeText(this, "LogOut.", Toast.LENGTH_SHORT).show();
+
+
+                finish();
+                startActivity(new Intent(MainActivity.this,PhoneNumberActivity.class));
+
+                alertDialog.dismiss();
+            });
+            // Show the AlertDialog
+            alertDialog.show();
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -245,4 +276,5 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.topmenu,menu);
         return super.onCreateOptionsMenu(menu);
     }
+
 }
