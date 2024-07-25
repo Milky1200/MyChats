@@ -277,4 +277,21 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    //to show online
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String currId = FirebaseAuth.getInstance().getUid();
+        database.getReference().child("presence").child(currId).setValue("Online");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        String currId = FirebaseAuth.getInstance().getUid();
+        database.getReference().child("presence").child(currId).setValue("Offline");
+
+    }
 }

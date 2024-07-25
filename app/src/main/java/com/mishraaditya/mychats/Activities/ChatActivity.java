@@ -18,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -68,11 +69,49 @@ public class ChatActivity extends AppCompatActivity {
             return insets;
         });
         String name=getIntent().getStringExtra("name");
+        String profile=getIntent().getStringExtra("image");
         receiverUid=getIntent().getStringExtra("uid");
         senderUid= FirebaseAuth.getInstance().getUid();
+        database=FirebaseDatabase.getInstance();
 
-        getSupportActionBar().setTitle(name);
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+        database.getReference().child("presence")
+                .child(receiverUid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if(snapshot.exists()){
+                    String status=snapshot.getValue(String.class);
+                    if(!status.isEmpty()) {
+                        if(status.equals("Offline")){
+                            binding.status.setVisibility(View.GONE);
+                        }else {
+                            binding.status.setText(status);
+                            binding.status.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        //getSupportActionBar().setTitle(name);
+        //getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+        setSupportActionBar(binding.toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        binding.name.setText(name);
+        Glide.with(ChatActivity.this).load(profile)
+                .placeholder(R.drawable.avatar)
+                .into(binding.profile);
+        binding.imageView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         storage=FirebaseStorage.getInstance();
 
@@ -86,7 +125,7 @@ public class ChatActivity extends AppCompatActivity {
         senderRoom=senderUid+receiverUid;
         receiverRoom=receiverUid+senderUid;
 
-        database=FirebaseDatabase.getInstance();
+
 
         database.getReference().child("chats")
                 .child(senderRoom)
@@ -234,12 +273,18 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    @Override
+   /* @Override
     public boolean onSupportNavigateUp() {
         finish();
         return super.onSupportNavigateUp();
+    }*/
+
+    //UserStatus
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String currId = FirebaseAuth.getInstance().getUid();
+        database.getReference().child("presence").child(currId).setValue("Online");
     }
-
-
 
 }
